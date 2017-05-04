@@ -16,7 +16,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
 
-	GLFWwindow* window = glfwCreateWindow(640, 480, "Hello Triangles", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(500, 500, "Hello Triangles", NULL, NULL);
 	if (!window) {
 		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
 		glfwTerminate();
@@ -30,27 +30,40 @@ int main() {
 
 	//
 
-	float points[] = {
+	/*float points[] = {
 		0.0f,  0.5f,  0.0f,
 		0.5f, -0.5f,  0.0f,
 		-0.5f, -0.5f,  0.0f
+	};*/
+
+	float points[] = {
+		0.5f,  0.5f,  0.0f,
+		0.5f, -0.5f,  0.0f,
+		-0.5f, -0.5f,  0.0f,
+		-0.5f, 0.5f,  0.0f
 	};
+
+	for (auto &a : points) {
+		a = a / 4;
+	}
 
 	float colours[] = {
 		1.0f, 0.0f,  0.0f,
-		0.0f, 1.0f,  0.0f,
-		0.0f, 0.0f,  1.0f
+		1.0f, 0.0f,  0.0f,
+		1.0f, 0.0f,  0.0f,
+		1.0f, 0.0f,  0.0f
 	};
 
 	GLuint points_vbo = 0;
 	glGenBuffers(1, &points_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, points_vbo);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), points, GL_STATIC_DRAW);
 
 	GLuint colours_vbo = 0;
 	glGenBuffers(1, &colours_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, colours_vbo);
-	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), colours, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), colours, GL_STATIC_DRAW);
+
 
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao);
@@ -64,6 +77,7 @@ int main() {
 	glEnableVertexAttribArray(1);
 
 	const char* vertex_shader =
+		"#version 400\n"
 		"layout(location = 0) in vec3 vertex_position;"
 		"layout(location = 1) in vec3 vertex_colour;"
 		"out vec3 colour;"
@@ -73,6 +87,7 @@ int main() {
 		"};";
 
 	const char* fragment_shader =
+		"#version 400\n"
 		"in vec3 colour;"
 		"out vec4 frag_colour;"
 		"void main() {"
@@ -111,8 +126,13 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(shader_programme);
+
+
+		glBindBuffer(GL_ARRAY_BUFFER, colours_vbo);
+
+
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 		glfwPollEvents();
 		glfwSwapBuffers(window);
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
