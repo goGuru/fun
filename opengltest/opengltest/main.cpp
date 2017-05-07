@@ -289,7 +289,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
 
-	GLFWwindow* window = glfwCreateWindow(720, 720, "Cubitz", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(720, 720, "Cube test", NULL, NULL);
 	if (!window) {
 		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
 		glfwTerminate();
